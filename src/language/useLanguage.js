@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import TR from "./tr.json"
 import EN from "./en.json"
 import { store } from "../store/store"
@@ -10,7 +10,13 @@ const useLanguage = (word) => {
     const changedLanguage = store.getState().commonSlice.language
     setLanguage(changedLanguage)
   }
-  store.subscribe(listener)
+
+  useEffect(() => {
+    const unsubs = store.subscribe(listener)
+    return () => {
+      unsubs()
+    }
+  }, [])
 
   return language === "tr" ? TR[word] : EN[word]
 }
